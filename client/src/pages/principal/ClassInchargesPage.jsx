@@ -399,7 +399,7 @@ const ClassInchargesPage = () => {
                       <span>
                         {editingIncharge ? "Update Incharge" : "Create Incharge"}
                       </span>
-                      <Sparkles size={16} />
+                      <CheckCircle2 size={16} />
                     </>
                   )}
                 </button>

@@ -11,6 +11,17 @@ import {
   deleteClassSubjectApi,
   createTeacherCredentialsApi,
 } from '../../services/api';
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Check,
+  UserPlus,
+  BookOpen,
+  AlertCircle,
+  CheckCircle2,
+  X,
+} from 'lucide-react';
 
 const MyClass = () => {
   const navigate = useNavigate();
@@ -237,42 +248,41 @@ const MyClass = () => {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1000px' }}>
+    <div style={{ padding: '24px', maxWidth: '1100px', margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="page-header" style={{ marginBottom: '24px' }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '700', color: '#1e293b' }}>My Class Subjects</h2>
+          <h1 className="page-title">My Class Subjects</h1>
           {assignedClassInfo && (
-            <p style={{ color: '#64748b', marginTop: '6px', fontSize: '0.9rem', margin: '4px 0 0' }}>
-              Assigned Class: <strong>{assignedClassInfo.name}</strong>
+            <p className="page-subtitle">
+              Assigned Class: <strong style={{ color: '#0f172a' }}>{assignedClassInfo.name}</strong>
               {assignedClassInfo.section && assignedClassInfo.section !== 'A' && (
-                <span> &mdash; Section: <strong>{assignedClassInfo.section}</strong></span>
+                <span> &mdash; Section: <strong style={{ color: '#0f172a' }}>{assignedClassInfo.section}</strong></span>
               )}
             </p>
           )}
         </div>
-        <button
-          onClick={() => setShowCreateTeacher(!showCreateTeacher)}
-          style={{
-            padding: '9px 16px', borderRadius: '7px', border: 'none', cursor: 'pointer',
-            background: showCreateTeacher ? '#94a3b8' : '#10b981',
-            color: 'white', fontWeight: '600', fontSize: '0.9rem',
-          }}
-        >
-          {showCreateTeacher ? 'Cancel' : 'Create Teacher Credentials'}
-        </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <button
+            onClick={() => setShowCreateTeacher(!showCreateTeacher)}
+            className="tch-btn tch-btn-outline"
+          >
+            {showCreateTeacher ? <X size={15} /> : <UserPlus size={15} />}
+            <span>{showCreateTeacher ? 'Cancel' : 'Create Teacher Credentials'}</span>
+          </button>
+        </div>
       </div>
 
       {/* ── Create Teacher Form ── */}
       {showCreateTeacher && (
-        <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px 20px', marginBottom: '24px' }}>
-          <p style={{ margin: '0 0 10px', fontWeight: '600', fontSize: '0.9rem', color: '#166534' }}>Create Subject Teacher Credentials</p>
+        <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '16px 20px', marginBottom: '20px' }}>
+          <p style={{ margin: '0 0 10px', fontWeight: '700', fontSize: '0.88rem', color: '#0f172a' }}>Create Subject Teacher Credentials</p>
           <form onSubmit={handleCreateTeacher} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
             <select
               value={newTeacher.teacherId}
               onChange={(e) => setNewTeacher({ ...newTeacher, teacherId: e.target.value })}
               disabled={creatingTeacher}
-              style={{ flex: 1, minWidth: '200px', padding: '9px 14px', borderRadius: '7px', border: '1px solid #86efac', fontSize: '0.9rem', outline: 'none', background: 'white' }}
+              style={{ flex: 1, minWidth: '200px', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.86rem', outline: 'none', background: 'white' }}
             >
               <option value="">-- Select Assigned Teacher --</option>
               {assignedTeachers.map((t) => (
@@ -285,16 +295,13 @@ const MyClass = () => {
               value={newTeacher.password}
               onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
               disabled={creatingTeacher}
-              style={{ flex: 1, minWidth: '150px', padding: '9px 14px', borderRadius: '7px', border: '1px solid #86efac', fontSize: '0.9rem', outline: 'none' }}
+              style={{ flex: 1, minWidth: '150px', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.86rem', outline: 'none' }}
             />
             <button
               type="submit"
               disabled={creatingTeacher}
-              style={{
-                padding: '9px 22px', borderRadius: '7px', border: 'none', cursor: 'pointer',
-                background: creatingTeacher ? '#86efac' : '#15803d',
-                color: 'white', fontWeight: '600', fontSize: '0.9rem', whiteSpace: 'nowrap',
-              }}
+              className="tch-btn tch-btn-primary"
+              style={{ whiteSpace: 'nowrap' }}
             >
               {creatingTeacher ? 'Creating...' : 'Create Credentials'}
             </button>
@@ -305,33 +312,33 @@ const MyClass = () => {
       )}
 
       {/* ── Add Subject Form ── */}
-      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '16px 20px', marginBottom: '24px' }}>
-        <p style={{ margin: '0 0 10px', fontWeight: '600', fontSize: '0.9rem', color: '#334155' }}>➕ Add New Subject</p>
+      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '16px 20px', marginBottom: '20px' }}>
+        <p style={{ margin: '0 0 10px', fontWeight: '700', fontSize: '0.88rem', color: '#0f172a' }}>Add New Subject</p>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
             type="text"
-            placeholder="Subject name (e.g. Physics)"
+            placeholder="Subject name (e.g. Mathematics, Physics)"
             value={newSubjectName}
             onChange={(e) => setNewSubjectName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAddSubject()}
             disabled={addingSubject}
             style={{
-              flex: 1, minWidth: '200px', padding: '9px 14px', borderRadius: '7px',
-              border: '1.5px solid #cbd5e1', fontSize: '0.9rem', outline: 'none',
-              background: 'white',
+              flex: 1, minWidth: '220px', padding: '8px 14px', borderRadius: '8px',
+              border: '1px solid #cbd5e1', fontSize: '0.88rem', outline: 'none',
+              background: '#ffffff',
             }}
           />
           <button
             onClick={handleAddSubject}
             disabled={addingSubject || !newSubjectName.trim()}
+            className="tch-btn tch-btn-primary"
             style={{
-              padding: '9px 22px', borderRadius: '7px', border: 'none', cursor: 'pointer',
-              background: addingSubject || !newSubjectName.trim() ? '#94a3b8' : '#6366f1',
-              color: 'white', fontWeight: '600', fontSize: '0.9rem', whiteSpace: 'nowrap',
-              transition: 'background 0.2s',
+              opacity: addingSubject || !newSubjectName.trim() ? 0.6 : 1,
+              whiteSpace: 'nowrap',
             }}
           >
-            {addingSubject ? 'Adding...' : 'Add Subject'}
+            <Plus size={15} />
+            <span>{addingSubject ? 'Adding...' : 'Add Subject'}</span>
           </button>
         </div>
         {addError && <p style={{ margin: '8px 0 0', color: '#ef4444', fontSize: '0.82rem' }}>{addError}</p>}
@@ -340,134 +347,127 @@ const MyClass = () => {
 
       {/* ── Subjects Table ── */}
       {subjects.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8', background: '#f8fafc', borderRadius: '10px', border: '1px dashed #cbd5e1' }}>
-          <p style={{ fontSize: '1.1rem', margin: 0 }}>No subjects yet. Add your first subject above.</p>
+        <div style={{ textAlign: 'center', padding: '48px 20px', color: '#94a3b8', background: '#f8fafc', borderRadius: '10px', border: '1px dashed #cbd5e1' }}>
+          <BookOpen size={32} style={{ margin: '0 auto 10px', opacity: 0.5 }} />
+          <p style={{ fontSize: '1rem', margin: 0, fontWeight: '500' }}>No subjects added yet. Add your first subject above.</p>
         </div>
       ) : (
-        <div style={{ background: 'white', borderRadius: '10px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={{ ...th, width: '46px' }}>#</th>
-                <th style={th}>Subject Name</th>
-                <th style={th}>Assigned Teacher</th>
-                <th style={th}>Assign Teacher</th>
-                <th style={{ ...th, textAlign: 'center' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subjects.map((subject, index) => (
-                <tr key={index} style={{ transition: 'background 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#fafbff')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
-                >
-                  {/* S.No */}
-                  <td style={{ ...td, color: '#94a3b8', fontWeight: '600', fontSize: '0.82rem' }}>{index + 1}</td>
-
-                  {/* Subject Name / Edit inline */}
-                  <td style={td}>
-                    {editingIndex === index ? (
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <input
-                          autoFocus
-                          type="text"
-                          value={editValue}
-                          onChange={(e) => setEditValue(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === 'Enter') handleSaveEdit(index); if (e.key === 'Escape') cancelEdit(); }}
-                          style={{ padding: '6px 10px', borderRadius: '6px', border: '1.5px solid #6366f1', fontSize: '0.88rem', outline: 'none', width: '160px' }}
-                        />
-                        <button onClick={() => handleSaveEdit(index)} disabled={editSaving}
-                          style={{ padding: '5px 12px', borderRadius: '5px', border: 'none', background: '#10b981', color: 'white', fontWeight: '600', fontSize: '0.8rem', cursor: 'pointer' }}>
-                          {editSaving ? '...' : 'Save'}
-                        </button>
-                        <button onClick={cancelEdit}
-                          style={{ padding: '5px 10px', borderRadius: '5px', border: '1px solid #e2e8f0', background: 'white', color: '#64748b', fontSize: '0.8rem', cursor: 'pointer' }}>
-                          Cancel
-                        </button>
-                        {editError && <span style={{ fontSize: '0.78rem', color: '#ef4444' }}>{editError}</span>}
-                      </div>
-                    ) : (
-                      <span style={{ fontWeight: '600', color: '#1e293b', fontSize: '0.9rem' }}>{subject.name}</span>
-                    )}
-                  </td>
-
-                  {/* Currently assigned teacher */}
-                  <td style={td}>
-                    {subject.assignedTeacherName ? (
-                      <span style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: '600' }}>
-                        ✓ {subject.assignedTeacherName}
-                      </span>
-                    ) : (
-                      <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>Unassigned</span>
-                    )}
-                  </td>
-
-                  {/* Teacher select + save */}
-                  <td style={td}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <select
-                        value={subject.assignedTeacherId}
-                        onChange={(e) => handleTeacherChange(index, e.target.value)}
-                        style={{ padding: '7px 10px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.85rem', maxWidth: '220px', outline: 'none' }}
-                      >
-                        <option value="">-- Select Teacher --</option>
-                        {teachers?.map((teacher) => (
-                          <option key={teacher._id || teacher.teacherId} value={teacher._id || teacher.teacherId}>
-                            {teacher.fullName} ({teacher.email})
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={() => handleSaveTeacher(subject, index)}
-                        disabled={saving[index]}
-                        style={{
-                          padding: '7px 14px', borderRadius: '6px', border: 'none', cursor: 'pointer',
-                          background: saving[index] ? '#9ca3af' : '#0ea5e9',
-                          color: 'white', fontWeight: '600', fontSize: '0.82rem', whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {saving[index] ? 'Saving...' : 'Assign'}
-                      </button>
-                      {statusMsg[index] && (
-                        <span style={{ fontSize: '0.78rem', color: statusMsg[index].startsWith('Error') ? '#ef4444' : '#10b981', fontWeight: '500' }}>
-                          {statusMsg[index]}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Edit / Delete */}
-                  <td style={{ ...td, textAlign: 'center' }}>
-                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                      <button
-                        onClick={() => startEdit(index, subject.name)}
-                        disabled={editingIndex !== null}
-                        title="Edit subject name"
-                        style={{
-                          padding: '6px 12px', borderRadius: '6px', border: '1px solid #e2e8f0',
-                          background: 'white', color: '#6366f1', fontWeight: '600', fontSize: '0.8rem', cursor: 'pointer',
-                          opacity: editingIndex !== null && editingIndex !== index ? 0.5 : 1,
-                        }}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteSubject(index)}
-                        disabled={deletingIndex === index}
-                        title="Delete subject"
-                        style={{
-                          padding: '6px 12px', borderRadius: '6px', border: '1px solid #fecaca',
-                          background: '#fff5f5', color: '#ef4444', fontWeight: '600', fontSize: '0.8rem', cursor: 'pointer',
-                        }}
-                      >
-                        {deletingIndex === index ? '...' : '🗑️ Delete'}
-                      </button>
-                    </div>
-                  </td>
+        <div className="tch-table-card">
+          <div className="tch-table-wrapper">
+            <table className="tch-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '50px' }}>#</th>
+                  <th>Subject Name</th>
+                  <th>Assigned Teacher</th>
+                  <th>Assign Teacher</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {subjects.map((subject, index) => (
+                  <tr key={index}>
+                    {/* S.No */}
+                    <td style={{ color: '#94a3b8', fontWeight: '600', fontSize: '0.82rem' }}>{index + 1}</td>
+
+                    {/* Subject Name / Edit inline */}
+                    <td>
+                      {editingIndex === index ? (
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                          <input
+                            autoFocus
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveEdit(index); if (e.key === 'Escape') cancelEdit(); }}
+                            style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #2563eb', fontSize: '0.85rem', outline: 'none', width: '160px' }}
+                          />
+                          <button onClick={() => handleSaveEdit(index)} disabled={editSaving}
+                            className="tch-btn tch-btn-primary"
+                            style={{ padding: '5px 12px', fontSize: '0.8rem' }}>
+                            {editSaving ? '...' : 'Save'}
+                          </button>
+                          <button onClick={cancelEdit}
+                            className="tch-btn tch-btn-outline"
+                            style={{ padding: '5px 10px', fontSize: '0.8rem' }}>
+                            Cancel
+                          </button>
+                          {editError && <span style={{ fontSize: '0.78rem', color: '#ef4444' }}>{editError}</span>}
+                        </div>
+                      ) : (
+                        <span style={{ fontWeight: '600', color: '#0f172a', fontSize: '0.9rem' }}>{subject.name}</span>
+                      )}
+                    </td>
+
+                    {/* Currently assigned teacher */}
+                    <td>
+                      {subject.assignedTeacherName ? (
+                        <span style={{ fontSize: '0.82rem', color: '#15803d', fontWeight: '600', background: '#f0fdf4', padding: '3px 8px', borderRadius: '6px', border: '1px solid #bbf7d0', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={13} /> {subject.assignedTeacherName}
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>Unassigned</span>
+                      )}
+                    </td>
+
+                    {/* Teacher select + save */}
+                    <td>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <select
+                          value={subject.assignedTeacherId}
+                          onChange={(e) => handleTeacherChange(index, e.target.value)}
+                          style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.84rem', maxWidth: '220px', outline: 'none', background: '#ffffff' }}
+                        >
+                          <option value="">-- Select Teacher --</option>
+                          {teachers?.map((teacher) => (
+                            <option key={teacher._id || teacher.teacherId} value={teacher._id || teacher.teacherId}>
+                              {teacher.fullName} ({teacher.email})
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => handleSaveTeacher(subject, index)}
+                          disabled={saving[index]}
+                          className="tch-btn tch-btn-primary"
+                          style={{ padding: '6px 12px', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
+                        >
+                          {saving[index] ? 'Saving...' : 'Assign'}
+                        </button>
+                        {statusMsg[index] && (
+                          <span style={{ fontSize: '0.78rem', color: statusMsg[index].startsWith('Error') ? '#ef4444' : '#15803d', fontWeight: '600' }}>
+                            {statusMsg[index]}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Edit / Delete */}
+                    <td style={{ textAlign: 'right' }}>
+                      <div className="tch-action-buttons">
+                        <button
+                          onClick={() => startEdit(index, subject.name)}
+                          disabled={editingIndex !== null}
+                          title="Edit subject name"
+                          className="tch-action-btn edit"
+                          style={{ opacity: editingIndex !== null && editingIndex !== index ? 0.4 : 1 }}
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSubject(index)}
+                          disabled={deletingIndex === index}
+                          title="Delete subject"
+                          className="tch-action-btn delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

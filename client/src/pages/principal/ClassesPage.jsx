@@ -24,6 +24,69 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+// Pre-primary educational stages ordered by progression
+const PRE_PRIMARY_RANKS = [
+  { test: /\b(playgroup|play\s*group|pg)\b/i, rank: 1 },
+  { test: /\b(pre[\s-]?nursery)\b/i, rank: 2 },
+  { test: /\b(nursery|nur)\b/i, rank: 3 },
+  { test: /\b(lkg|lower\s*k\.?g\.?|kg[\s-]?1)\b/i, rank: 4 },
+  { test: /\b(ukg|upper\s*k\.?g\.?|kg[\s-]?2)\b/i, rank: 5 },
+  { test: /\b(kg|kindergarten|prep)\b/i, rank: 6 },
+];
+
+const ROMAN_NUMERALS = {
+  i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6,
+  vii: 7, viii: 8, ix: 9, x: 10, xi: 11, xii: 12,
+};
+
+const getClassSortValue = (cls) => {
+  if (!cls) return { rank: 999, num: 0, text: "" };
+  const nameStr = (cls.name || "").trim();
+  const gradeStr = (cls.grade || "").trim();
+  const combined = `${gradeStr} ${nameStr}`.toLowerCase();
+
+  // 1. Pre-primary stages (Playgroup, Nursery, LKG, UKG, KG)
+  for (const item of PRE_PRIMARY_RANKS) {
+    if (item.test.test(combined)) {
+      return { rank: item.rank, num: 0, text: nameStr };
+    }
+  }
+
+  // 2. Numerical classes / grades (e.g., "Class 1", "Grade 10", "1st")
+  const digitMatch = combined.match(/\d+/);
+  if (digitMatch) {
+    return { rank: 100, num: parseInt(digitMatch[0], 10), text: nameStr };
+  }
+
+  // 3. Roman numerals (e.g., "Class I", "Class XII")
+  const romanMatch = combined.match(/\b(xii|xi|x|ix|viii|vii|vi|v|iv|iii|ii|i)\b/);
+  if (romanMatch && ROMAN_NUMERALS[romanMatch[1]]) {
+    return { rank: 100, num: ROMAN_NUMERALS[romanMatch[1]], text: nameStr };
+  }
+
+  // 4. Fallback alphabetical
+  return { rank: 200, num: 0, text: nameStr };
+};
+
+const sortClassesAscending = (classesList) => {
+  if (!Array.isArray(classesList)) return [];
+  return [...classesList].sort((a, b) => {
+    const valA = getClassSortValue(a);
+    const valB = getClassSortValue(b);
+
+    if (valA.rank !== valB.rank) {
+      return valA.rank - valB.rank;
+    }
+    if (valA.num !== valB.num) {
+      return valA.num - valB.num;
+    }
+    return (valA.text || "").localeCompare(valB.text || "", undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+  });
+};
+
 const ClassesPage = () => {
   // Helper: returns true if a stored section value matches a section card name.
   // Handles cases like stored "A" matching displayed "Section A", or exact match.
@@ -63,7 +126,7 @@ const ClassesPage = () => {
     setIsLoadingClasses(true);
     try {
       const data = await fetchPrincipalClasses();
-      setClasses(data.classes || []);
+      setClasses(sortClassesAscending(data.classes || []));
     } catch (err) {
       setApiError(err.response?.data?.message || "Failed to load classes.");
     } finally {
@@ -278,96 +341,86 @@ const ClassesPage = () => {
         </div>
       ) : (
         <div className="classes-grid">
-          {classes.map((cls) => (
-            <div
-              key={cls._id}
-              className="class-card"
-              onClick={() => handleOpenClassDetail(cls._id)}
-            >
-              <div className="class-card-header">
-                <div className="class-icon-bg">
-                  <GraduationCap className="class-icon" />
-                </div>
-                <div>
-                  <h4>{cls.name}</h4>
-                  <span className="class-subtext">Grade {cls.grade}</span>
-                </div>
-              </div>
+          {sortClassesAscending(classes).map((cls) => {
+            const hasSec = cls.hasSections && cls.sections && cls.sections.length > 0;
+            const inchargeCount = hasSec
+              ? cls.sections.filter((s) => s.classIncharge).length
+              : cls.classIncharge ? 1 : 0;
 
-              <div className="class-card-body">
-                {cls.hasSections && cls.sections && cls.sections.length > 0 ? (
-                  <div className="incharge-highlight-box sections-badge-box">
-                    <span className="highlight-label flex-between">
-                      <span>Sections ({cls.sections.length})</span>
-                      <span className="sections-pill-tag">Multi-Section</span>
-                    </span>
-                    <div style={{ marginTop: "6px", display: "flex", flexDirection: "column", gap: "4px" }}>
-                      {cls.sections.slice(0, 4).map((sec, i) => (
-                        <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px", paddingBottom: "4px", borderBottom: i < Math.min(cls.sections.length, 4) - 1 ? "1px solid #e2e8f0" : "none" }}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-                            <span className="sec-chip" style={{ flexShrink: 0 }}>{sec.name}</span>
-                            {sec.classIncharge ? (
-                              <span style={{ fontSize: "0.72rem", color: "#065f46", fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "160px" }}>
-                                <UserCheck size={11} style={{ display: "inline", marginRight: "3px", verticalAlign: "middle" }} />
-                                {sec.classIncharge.name || sec.classIncharge} {sec.classIncharge.teacherId && sec.classIncharge.teacherId !== "N/A" ? `[${sec.classIncharge.teacherId}]` : ""}
-                              </span>
-                            ) : (
-                              <span style={{ fontSize: "0.7rem", color: "#94a3b8", fontStyle: "italic" }}>Unassigned</span>
-                            )}
-                          </div>
-                          {cls.subjectTeachers?.filter(st => sectionMatches(st.section, sec.name)).length > 0 && (
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", paddingLeft: "4px" }}>
-                              {cls.subjectTeachers.filter(st => sectionMatches(st.section, sec.name)).map((st, idx) => (
-                                <span key={idx} style={{ fontSize: "0.65rem", background: "#f3e8ff", color: "#6b21a8", padding: "1px 6px", borderRadius: "8px", border: "1px solid #d8b4fe", whiteSpace: "nowrap" }}>
-                                  {st.teacher?.name?.split(" ")[0] || "Unassigned"} {st.teacher?.teacherId && st.teacher.teacherId !== "N/A" ? `[${st.teacher.teacherId}]` : ""} ({st.subject})
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {cls.sections.length > 4 && (
-                        <span className="sec-chip more" style={{ alignSelf: "flex-start" }}>+{cls.sections.length - 4} more</span>
-                      )}
-                    </div>
+            return (
+              <div
+                key={cls._id}
+                className="class-card"
+                onClick={() => handleOpenClassDetail(cls._id)}
+              >
+                <div className="class-card-header">
+                  <div className="class-icon-bg">
+                    <GraduationCap className="class-icon" />
                   </div>
-                ) : (
-                  <div className="incharge-highlight-box">
-                    <span className="highlight-label">Class Incharge</span>
-                    {cls.classIncharge ? (
-                      <div className="incharge-user-row">
-                        <UserCheck className="icon-incharge text-emerald" />
-                        <span className="incharge-name">
-                          {cls.classIncharge.name} {cls.classIncharge.teacherId && cls.classIncharge.teacherId !== "N/A" ? `[${cls.classIncharge.teacherId}]` : ""}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h4>{cls.name}</h4>
+                    <span className="class-subtext">Grade {cls.grade}</span>
+                  </div>
+                  {hasSec ? (
+                    <span className="sections-pill-tag">Multi-Section</span>
+                  ) : (
+                    <span className="sec-chip" style={{ fontSize: "0.7rem", color: "#64748b" }}>Single Class</span>
+                  )}
+                </div>
+
+                <div className="class-card-body">
+                  {hasSec ? (
+                    <div className="incharge-highlight-box">
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                        <span className="highlight-label" style={{ color: "#334155" }}>
+                          Sections ({cls.sections.length})
+                        </span>
+                        <span style={{ fontSize: "0.75rem", color: inchargeCount === cls.sections.length ? "#15803d" : "#b45309", fontWeight: "600" }}>
+                          {inchargeCount}/{cls.sections.length} Incharges
                         </span>
                       </div>
-                    ) : (
-                      <span className="unassigned-text">Not Assigned</span>
-                    )}
-                    {cls.subjectTeachers?.length > 0 && (
-                      <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                        {cls.subjectTeachers.map((st, idx) => (
-                          <span key={idx} style={{ fontSize: "0.65rem", background: "#f3e8ff", color: "#6b21a8", padding: "2px 6px", borderRadius: "8px", border: "1px solid #d8b4fe", whiteSpace: "nowrap" }}>
-                            {st.teacher?.name?.split(" ")[0] || "Unassigned"} {st.teacher?.teacherId && st.teacher.teacherId !== "N/A" ? `[${st.teacher.teacherId}]` : ""} ({st.subject})
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {cls.sections.map((sec, i) => (
+                          <span key={i} className="sec-chip" title={sec.classIncharge ? `Incharge: ${sec.classIncharge.name || sec.classIncharge}` : "Unassigned"}>
+                            {sec.name} {sec.classIncharge ? "✓" : "—"}
                           </span>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
+                    </div>
+                  ) : (
+                    <div className="incharge-highlight-box">
+                      <span className="highlight-label">Class Incharge</span>
+                      {cls.classIncharge ? (
+                        <div className="incharge-user-row">
+                          <UserCheck className="icon-incharge text-emerald" />
+                          <span className="incharge-name">
+                            {cls.classIncharge.name}
+                            {cls.classIncharge.teacherId && cls.classIncharge.teacherId !== "N/A" && (
+                              <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "500", marginLeft: "4px" }}>
+                                [{cls.classIncharge.teacherId}]
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="unassigned-text">Not Assigned</span>
+                      )}
+                    </div>
+                  )}
 
-                <div className="teachers-count-row">
-                  <Users className="w-4 h-4 text-purple" />
-                  <span>{cls.totalSubjectTeachers} Subject Teacher(s)</span>
+                  <div className="teachers-count-row">
+                    <Users size={14} style={{ color: "#64748b" }} />
+                    <span>{cls.totalSubjectTeachers || 0} Subject Teacher(s) Mapped</span>
+                  </div>
+                </div>
+
+                <div className="class-card-footer">
+                  <span>Manage Class &amp; Sections</span>
+                  <ChevronRight size={14} />
                 </div>
               </div>
-
-              <div className="class-card-footer">
-                <span>Click to view details</span>
-                <ChevronRight className="w-4 h-4" />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -549,14 +602,14 @@ const ClassesPage = () => {
                                 {inc ? (
                                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                     <div style={{
-                                      width: "28px", height: "28px", borderRadius: "50%",
-                                      background: "linear-gradient(135deg,#10b981,#059669)",
+                                      width: "28px", height: "28px", borderRadius: "6px",
+                                      background: "#eff6ff", color: "#2563eb", border: "1px solid #bfdbfe",
                                       display: "flex", alignItems: "center", justifyContent: "center"
                                     }}>
-                                      <UserCheck size={14} color="white" />
+                                      <UserCheck size={14} />
                                     </div>
                                     <div>
-                                      <div style={{ fontWeight: "600", fontSize: "0.85rem", color: "#065f46" }}>{inc.name}</div>
+                                      <div style={{ fontWeight: "600", fontSize: "0.85rem", color: "#0f172a" }}>{inc.name}</div>
                                       <div style={{ fontSize: "0.72rem", color: "#64748b" }}>{inc.email}</div>
                                     </div>
                                   </div>
@@ -569,8 +622,8 @@ const ClassesPage = () => {
                               {inc && (
                                 <span style={{
                                   fontSize: "0.72rem", fontWeight: "600",
-                                  background: "#dcfce7", color: "#166534",
-                                  padding: "2px 8px", borderRadius: "10px"
+                                  background: "#f0fdf4", color: "#15803d", border: "1px solid #bbf7d0",
+                                  padding: "2px 8px", borderRadius: "6px"
                                 }}>Assigned</span>
                               )}
                             </div>

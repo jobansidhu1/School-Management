@@ -215,34 +215,24 @@ const StudentDashboard = () => {
   return (
     <div className="tch-container" style={{ paddingBottom: "40px" }}>
       {/* ── WELCOME HERO BANNER ── */}
-      <div
-        className="pl-welcome-banner"
-        style={{
-          background: "linear-gradient(135deg, #4f46e5 0%, #4338ca 50%, #6366f1 100%)",
-          borderRadius: "16px",
-          padding: "28px 32px",
-          marginBottom: "24px",
-          boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.3)",
-          color: "#ffffff",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-              <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: "8px", padding: "4px 12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <ShieldCheck size={14} color="white" />
-                <span style={{ color: "white", fontSize: "0.8rem", fontWeight: 700 }}>STUDENT PORTAL</span>
+      <div className="pl-welcome-banner" style={{ marginBottom: "24px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", width: "100%" }}>
+          <div className="pl-banner-content">
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div className="pl-banner-badge">
+                <ShieldCheck size={14} />
+                <span>STUDENT PORTAL</span>
               </div>
               {schoolInfo.currentSession && (
-                <span style={{ background: "rgba(255,255,255,0.15)", borderRadius: "8px", padding: "4px 10px", fontSize: "0.78rem", fontWeight: 600 }}>
+                <span className="pl-meta-pill">
                   Session: {schoolInfo.currentSession}
                 </span>
               )}
             </div>
-            <h1 style={{ color: "white", margin: 0, fontSize: "1.75rem", fontWeight: 800 }}>
-              Welcome back, {studentInfo.studentName || studentInfo.name || "Student"}! 👋
+            <h1 className="pl-banner-title">
+              Welcome back, {studentInfo.studentName || studentInfo.name || "Student"}!
             </h1>
-            <p style={{ color: "rgba(255,255,255,0.88)", margin: "6px 0 0", fontSize: "0.95rem" }}>
+            <p className="pl-banner-subtitle">
               Track your subject test marks, exam percentages, and official academic performance.
             </p>
           </div>
@@ -253,21 +243,9 @@ const StudentDashboard = () => {
               { icon: <GraduationCap size={13} />, label: "Class", val: classInfo.name ? `${classInfo.name}${studentInfo.section ? " (" + studentInfo.section + ")" : ""}` : (studentInfo.classStandard ? `Class ${studentInfo.classStandard}` : "N/A") },
               { icon: <BookOpen size={13} />, label: "Roll No", val: studentInfo.rollno },
             ].map((pill, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "rgba(255,255,255,0.18)",
-                  backdropFilter: "blur(8px)",
-                  borderRadius: "10px",
-                  padding: "8px 14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
-              >
-                <span style={{ color: "rgba(255,255,255,0.8)" }}>{pill.icon}</span>
-                <span style={{ color: "white", fontSize: "0.85rem" }}>
+              <div key={i} className="pl-meta-pill">
+                <span style={{ color: "#64748b" }}>{pill.icon}</span>
+                <span>
                   {pill.label}: <strong>{pill.val || "N/A"}</strong>
                 </span>
               </div>
@@ -275,25 +253,9 @@ const StudentDashboard = () => {
 
             <button
               onClick={() => setReportCardOpen(true)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "9px 18px",
-                borderRadius: "10px",
-                background: "#ffffff",
-                color: "#4338ca",
-                border: "none",
-                fontWeight: 700,
-                fontSize: "0.88rem",
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+              className="tch-btn tch-btn-primary"
             >
-              <FileText size={16} /> View &amp; Print Report Card
+              <FileText size={15} /> View &amp; Print Report Card
             </button>
           </div>
         </div>
@@ -306,31 +268,31 @@ const StudentDashboard = () => {
             label: "Overall Score",
             val: hasMarks ? `${summary.overallPercentage}%` : "Pending",
             sub: hasMarks ? `Grade ${summary.overallGrade} • ${summary.performanceLabel}` : "No marks yet",
-            icon: <Award size={22} />,
-            color: "#4f46e5",
-            bg: "#eef2ff",
+            icon: <Award size={20} />,
+            color: "#2563eb",
+            bg: "#eff6ff",
           },
           {
             label: "Marks Obtained",
             val: hasMarks ? `${summary.totalMarksObtained} / ${summary.totalMaxMarks}` : "0 / 0",
             sub: `${summary.totalTestsTaken} tests recorded`,
-            icon: <Star size={22} />,
-            color: "#10b981",
-            bg: "#d1fae5",
+            icon: <Star size={20} />,
+            color: "#16a34a",
+            bg: "#f0fdf4",
           },
           {
             label: "Assigned Subjects",
             val: assignedSubjects.length,
             sub: `${assignedSubjects.filter((s) => s.teacher && s.teacher !== "Not Assigned").length} teachers mapped`,
-            icon: <BookOpen size={22} />,
-            color: "#3b82f6",
-            bg: "#dbeafe",
+            icon: <BookOpen size={20} />,
+            color: "#7c3aed",
+            bg: "#f5f3ff",
           },
           {
             label: "Attendance Rate",
             val: attStats.total > 0 ? `${attStats.rate}%` : "N/A",
             sub: `${attStats.present} present of ${attStats.total} days`,
-            icon: <CheckCircle2 size={22} />,
+            icon: <CheckCircle2 size={20} />,
             color: "#059669",
             bg: "#ecfdf5",
           },
@@ -338,7 +300,7 @@ const StudentDashboard = () => {
             label: "Academic Status",
             val: hasMarks ? summary.status : "Pending Evaluation",
             sub: hasMarks && summary.overallPercentage >= 35 ? "Eligible for Promotion" : "Term in progress",
-            icon: <Sparkles size={22} />,
+            icon: <Sparkles size={20} />,
             color: summary.status === "Pass" ? "#16a34a" : "#ca8a04",
             bg: summary.status === "Pass" ? "#f0fdf4" : "#fefce8",
           },
@@ -347,20 +309,20 @@ const StudentDashboard = () => {
             key={i}
             style={{
               background: "#ffffff",
-              borderRadius: "14px",
-              padding: "20px",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+              borderRadius: "10px",
+              padding: "16px 18px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
               border: "1px solid #e2e8f0",
               display: "flex",
               alignItems: "flex-start",
-              gap: "14px",
+              gap: "12px",
             }}
           >
             <div
               style={{
-                width: 48,
-                height: 48,
-                borderRadius: "12px",
+                width: 40,
+                height: 40,
+                borderRadius: "8px",
                 background: stat.bg,
                 display: "flex",
                 alignItems: "center",
@@ -371,14 +333,14 @@ const StudentDashboard = () => {
             >
               {stat.icon}
             </div>
-            <div style={{ overflow: "hidden" }}>
-              <div style={{ fontSize: "1.45rem", fontWeight: 800, color: "#1e293b", lineHeight: 1.1 }}>
-                {stat.val}
-              </div>
-              <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "#475569", marginTop: "3px" }}>
+            <div>
+              <div style={{ fontSize: "0.75rem", fontWeight: "600", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 {stat.label}
               </div>
-              <div style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#0f172a", marginTop: "2px", lineHeight: 1.2 }}>
+                {stat.val}
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "4px" }}>
                 {stat.sub}
               </div>
             </div>

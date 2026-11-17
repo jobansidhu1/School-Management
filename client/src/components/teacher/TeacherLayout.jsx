@@ -20,6 +20,7 @@ import {
   Info,
   CheckCircle,
   MessageSquare,
+  Workflow,
 } from "lucide-react";
 
 // ── In-App Notification Toast ───────────────────────────────────────────────
@@ -237,6 +238,11 @@ const TeacherLayout = () => {
       to: "/teacher/complaints",
       icon: <MessageSquare className="sidebar-nav-icon" />,
       label: "Complaints & Issues",
+    },
+    {
+      to: "/teacher/system-flow",
+      icon: <Workflow className="sidebar-nav-icon" />,
+      label: "System & Access Flow",
     },
   ];
 

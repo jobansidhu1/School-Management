@@ -19,7 +19,6 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Sparkles,
   School,
   Award,
   Clock,
@@ -345,7 +344,7 @@ const ProfilePage = () => {
             <div className="profile-card">
               <div className="profile-card-header">
                 <div className="card-title-wrap">
-                  <Sparkles size={20} className="card-title-icon" />
+                  <ShieldCheck size={20} className="card-title-icon" />
                   <h3>System Scope &amp; Permissions</h3>
                 </div>
               </div>

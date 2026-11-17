@@ -33,6 +33,9 @@ import {
   Download,
   Save,
   CheckCircle2,
+  BookOpen,
+  GraduationCap,
+  User,
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -381,79 +384,71 @@ const Dashboard = () => {
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
       {/* ── WELCOME BANNER ── */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
-        borderRadius: '16px', 
-        padding: '32px', 
-        color: 'white',
-        boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
-        marginBottom: '32px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: '800' }}>
+      <div className="pl-welcome-banner" style={{ marginBottom: '24px' }}>
+        <div className="pl-banner-content">
+          <div className="pl-banner-badge">
+            <GraduationCap size={14} />
+            <span>FACULTY PORTAL</span>
+          </div>
+          <h1 className="pl-banner-title">
             Welcome back, {teacher?.fullName || user?.name}!
-          </h2>
-          <p style={{ color: '#bfdbfe', marginTop: '12px', fontSize: '1.1rem', maxWidth: '600px' }}>
-            This is your Subject Teacher Dashboard. Track assigned classes, view announcements from the Principal, and monitor facility complaint statuses.
+          </h1>
+          <p className="pl-banner-subtitle">
+            This is your Subject Teacher Dashboard. Track assigned classes, conduct monthly tests, and monitor academic progress.
           </p>
-        </div>
-        <div style={{
-          position: 'absolute',
-          right: '-20px',
-          bottom: '-40px',
-          opacity: 0.1,
-          transform: 'rotate(-15deg)',
-          fontSize: '150px'
-        }}>
-          👨‍🏫
-        </div>
-      </div>
-
-      {/* ── PROFILE & QUICK STATS ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-        <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: '1.2rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1.5rem' }}>📋</span> Profile Info
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
-              <span style={{ color: '#64748b', fontWeight: '500' }}>Teacher ID:</span>
-              <span style={{ color: '#334155', fontWeight: '600' }}>{teacher?.teacherId || 'N/A'}</span>
+          <div className="pl-banner-meta-row">
+            <div className="pl-meta-pill">
+              <span>Teacher ID:</span>
+              <strong>{teacher?.teacherId || 'N/A'}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
-              <span style={{ color: '#64748b', fontWeight: '500' }}>Department:</span>
-              <span style={{ color: '#334155', fontWeight: '600' }}>{teacher?.department || 'N/A'}</span>
+            <div className="pl-meta-pill">
+              <span>Department:</span>
+              <strong>{teacher?.department || 'N/A'}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#64748b', fontWeight: '500' }}>Designation:</span>
-              <span style={{ color: '#334155', fontWeight: '600' }}>{teacher?.designation || 'N/A'}</span>
+            <div className="pl-meta-pill">
+              <span>Designation:</span>
+              <strong>{teacher?.designation || 'Subject Teacher'}</strong>
             </div>
           </div>
         </div>
-        
-        <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: '1.2rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1.5rem' }}>📚</span> Quick Stats
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '700', color: '#3b82f6' }}>
-                {assignments?.length || 0}
-              </div>
-              <div style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: '500' }}>
-                Total Assignments
-              </div>
-            </div>
-            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '700', color: '#10b981' }}>
-                {new Set(assignments?.map(a => a.subject)).size || 0}
-              </div>
-              <div style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: '500' }}>
-                Unique Subjects
-              </div>
-            </div>
+      </div>
+
+      {/* ── QUICK STATS ── */}
+      <div className="tch-stats-grid" style={{ marginBottom: '24px' }}>
+        <div className="tch-stat-card">
+          <div className="tch-stat-icon blue">
+            <BookOpen size={20} />
+          </div>
+          <div>
+            <span className="tch-stat-value">{assignments?.length || 0}</span>
+            <span className="tch-stat-label">Assigned Classes</span>
+          </div>
+        </div>
+        <div className="tch-stat-card">
+          <div className="tch-stat-icon purple">
+            <Award size={20} />
+          </div>
+          <div>
+            <span className="tch-stat-value">{new Set(assignments?.map(a => a.subject)).size || 0}</span>
+            <span className="tch-stat-label">Unique Subjects</span>
+          </div>
+        </div>
+        <div className="tch-stat-card">
+          <div className="tch-stat-icon green">
+            <MessageSquare size={20} />
+          </div>
+          <div>
+            <span className="tch-stat-value">{complaints.length}</span>
+            <span className="tch-stat-label">Facility Grievances</span>
+          </div>
+        </div>
+        <div className="tch-stat-card">
+          <div className="tch-stat-icon blue">
+            <Bell size={20} />
+          </div>
+          <div>
+            <span className="tch-stat-value">{unreadNotifCount}</span>
+            <span className="tch-stat-label">Unread Notices</span>
           </div>
         </div>
       </div>
@@ -807,10 +802,11 @@ const Dashboard = () => {
       </div>
 
       {/* ── ASSIGNED CLASSES TABLE ── */}
-      <div style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-        <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
-          <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1.5rem' }}>🎓</span> Assigned Classes &amp; Subjects
+      <div style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+        <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+          <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <GraduationCap size={20} color="#2563eb" />
+            <span>Assigned Classes &amp; Subjects</span>
           </h3>
         </div>
         
@@ -818,12 +814,12 @@ const Dashboard = () => {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
-                <tr style={{ background: '#f1f5f9' }}>
-                  <th style={{ padding: '16px 24px', color: '#475569', fontWeight: '600', borderBottom: '1px solid #e2e8f0' }}>Class &amp; Section</th>
-                  <th style={{ padding: '16px 24px', color: '#475569', fontWeight: '600', borderBottom: '1px solid #e2e8f0' }}>Subject</th>
-                  <th style={{ padding: '16px 24px', color: '#475569', fontWeight: '600', borderBottom: '1px solid #e2e8f0' }}>Class Incharge</th>
-                  <th style={{ padding: '16px 24px', color: '#475569', fontWeight: '600', borderBottom: '1px solid #e2e8f0' }}>Grade Level</th>
-                  <th style={{ padding: '16px 24px', color: '#475569', fontWeight: '600', borderBottom: '1px solid #e2e8f0', textAlign: 'right' }}>Actions</th>
+                <tr style={{ background: '#f8fafc' }}>
+                  <th style={{ padding: '14px 20px', color: '#475569', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #e2e8f0' }}>Class &amp; Section</th>
+                  <th style={{ padding: '14px 20px', color: '#475569', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #e2e8f0' }}>Subject</th>
+                  <th style={{ padding: '14px 20px', color: '#475569', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #e2e8f0' }}>Class Incharge</th>
+                  <th style={{ padding: '14px 20px', color: '#475569', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #e2e8f0' }}>Grade Level</th>
+                  <th style={{ padding: '14px 20px', color: '#475569', fontWeight: '700', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid #e2e8f0', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -848,90 +844,88 @@ const Dashboard = () => {
                     <tr 
                       key={assignment._id || index}
                       style={{ 
-                        borderBottom: index === assignments.length - 1 ? 'none' : '1px solid #e2e8f0',
-                        transition: 'background-color 0.2s'
+                        borderBottom: index === assignments.length - 1 ? 'none' : '1px solid #f1f5f9',
+                        transition: 'background-color 0.15s'
                       }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      <td style={{ padding: '16px 24px' }}>
+                      <td style={{ padding: '14px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <div style={{ 
                             background: '#eff6ff', 
                             color: '#2563eb', 
-                            width: '40px', 
-                            height: '40px', 
+                            width: '36px', 
+                            height: '36px', 
                             borderRadius: '8px', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
                             fontWeight: '700',
-                            fontSize: '1.1rem'
+                            fontSize: '1rem'
                           }}>
                             {classInfo.name?.[0] || '-'}
                           </div>
                           <div>
-                            <div style={{ fontWeight: '600', color: '#1e293b' }}>{classInfo.name || 'Unknown Class'}</div>
-                            <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Section: {assignment.section || 'A'}</div>
+                            <div style={{ fontWeight: '600', color: '#1e293b', fontSize: '0.9rem' }}>{classInfo.name || 'Unknown Class'}</div>
+                            <div style={{ fontSize: '0.78rem', color: '#64748b' }}>Section: {assignment.section || 'A'}</div>
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: '16px 24px' }}>
+                      <td style={{ padding: '14px 20px' }}>
                         <span style={{ 
                           background: '#f0fdf4', 
                           color: '#16a34a', 
-                          padding: '4px 12px', 
-                          borderRadius: '999px',
-                          fontSize: '0.85rem',
+                          padding: '3px 10px', 
+                          borderRadius: '6px',
+                          fontSize: '0.8rem',
                           fontWeight: '600',
                           border: '1px solid #bbf7d0'
                         }}>
                           {assignment.subject}
                         </span>
                       </td>
-                      <td style={{ padding: '16px 24px' }}>
+                      <td style={{ padding: '14px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div style={{
                             width: '24px',
                             height: '24px',
                             borderRadius: '50%',
-                            background: '#e2e8f0',
+                            background: '#f1f5f9',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '0.7rem',
                             color: '#64748b'
                           }}>
-                            👤
+                            <User size={13} />
                           </div>
-                          <span style={{ color: '#334155', fontWeight: '500' }}>
+                          <span style={{ color: '#334155', fontWeight: '500', fontSize: '0.85rem' }}>
                             {inchargeName}
                           </span>
                         </div>
                       </td>
-                      <td style={{ padding: '16px 24px', color: '#64748b' }}>
+                      <td style={{ padding: '14px 20px', color: '#64748b', fontSize: '0.85rem' }}>
                         {classInfo.grade || 'N/A'}
                       </td>
-                      <td style={{ padding: '16px 24px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <td style={{ padding: '14px 20px', textAlign: 'right', whiteSpace: 'nowrap' }}>
                         <button
                           onClick={() => openMarksModal(assignment)}
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '6px',
-                            padding: '8px 16px',
-                            background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                            padding: '7px 14px',
+                            background: '#2563eb',
                             color: '#ffffff',
                             border: 'none',
-                            borderRadius: '8px',
-                            fontSize: '0.84rem',
+                            borderRadius: '6px',
+                            fontSize: '0.82rem',
                             fontWeight: '600',
                             cursor: 'pointer',
-                            boxShadow: '0 2px 6px rgba(79, 70, 229, 0.25)',
-                            transition: 'all 0.2s',
+                            transition: 'background-color 0.15s',
                           }}
-                          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-                          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1d4ed8')}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#2563eb')}
                         >
                           <FileEdit size={14} /> Enter / Update Marks
                         </button>
@@ -942,20 +936,19 @@ const Dashboard = () => {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '6px',
-                            padding: '8px 16px',
-                            background: '#f0fdf4',
-                            color: '#16a34a',
-                            border: '1px solid #86efac',
-                            borderRadius: '8px',
-                            fontSize: '0.84rem',
+                            padding: '7px 14px',
+                            background: '#ffffff',
+                            color: '#15803d',
+                            border: '1px solid #bbf7d0',
+                            borderRadius: '6px',
+                            fontSize: '0.82rem',
                             fontWeight: '600',
                             cursor: 'pointer',
                             marginLeft: '8px',
-                            boxShadow: '0 2px 6px rgba(16, 185, 129, 0.15)',
-                            transition: 'all 0.2s',
+                            transition: 'all 0.15s',
                           }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#dcfce7')}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f0fdf4')}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0fdf4')}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ffffff')}
                         >
                           <Calendar size={14} /> Attendance
                         </button>
