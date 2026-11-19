@@ -35,9 +35,11 @@ const Login = () => {
   useEffect(() => {
     if (isAuthenticated) {
       if (role === ROLES.PRINCIPAL) {
-        navigate("/principal/classes", { replace: true });
+        navigate("/principal/dashboard", { replace: true });
       } else if (role === ROLES.CLASS_INCHARGE) {
         navigate("/class-incharge/dashboard", { replace: true });
+      } else if (role === ROLES.SUBJECT_TEACHER) {
+        navigate("/teacher/dashboard", { replace: true });
       } else if (role === ROLES.STUDENT) {
         navigate("/student/dashboard", { replace: true });
       } else {
@@ -71,11 +73,15 @@ const Login = () => {
     if (loginUser.fulfilled.match(resultAction)) {
       const userRole = resultAction.payload?.user?.role;
       if (userRole === ROLES.PRINCIPAL) {
-        navigate("/principal/classes");
+        navigate("/principal/dashboard");
       } else if (userRole === ROLES.CLASS_INCHARGE) {
         navigate("/class-incharge/dashboard");
+      } else if (userRole === ROLES.SUBJECT_TEACHER) {
+        navigate("/teacher/dashboard");
       } else if (userRole === ROLES.STUDENT) {
         navigate("/student/dashboard");
+      } else {
+        navigate("/");
       }
     }
   };
@@ -95,7 +101,7 @@ const Login = () => {
           <div className="login-header">
             <div className="badge-principal">
               <ShieldCheck className="icon-shield" />
-              <span>School Staff Portal</span>
+              <span>School Staff &amp; Student Portal</span>
             </div>
             <div className="brand-logo">
               <div className="logo-icon-bg">
@@ -104,8 +110,7 @@ const Login = () => {
               <h1 className="brand-title">School Test Management</h1>
             </div>
             <p className="login-subtitle">
-              Sign in with your Principal or Class Incharge credentials to
-              access your dashboard
+              Sign in with your Principal, Staff, or Student credentials to access your dashboard
             </p>
           </div>
 
@@ -138,6 +143,7 @@ const Login = () => {
                   disabled={isLoading}
                   autoComplete="username"
                   required
+                  className="login-input"
                 />
               </div>
               {formErrors.email && (
@@ -168,6 +174,7 @@ const Login = () => {
                   disabled={isLoading}
                   autoComplete="current-password"
                   required
+                  className="login-input has-toggle"
                 />
                 <button
                   type="button"

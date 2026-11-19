@@ -9,7 +9,14 @@ let socket = null;
 export const connectSocket = (token) => {
   if (socket && socket.connected) return socket;
 
-  socket = io("http://localhost:5000", {
+  const socketUrl =
+    import.meta.env.VITE_SOCKET_URL ||
+    (import.meta.env.VITE_API_URL
+      ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "")
+      : "") ||
+    "http://localhost:5000";
+
+  socket = io(socketUrl, {
     auth: { token },
     transports: ["websocket", "polling"],
     reconnection: true,

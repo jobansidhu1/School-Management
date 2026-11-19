@@ -18,10 +18,33 @@ const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 5000;
 
+// ── CORS Configuration ──────────────────────────────────────────────────────────
+const allowedOrigins = [
+  "https://school-class-management.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5000",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+];
+
+const corsOriginHandler = (origin, callback) => {
+  if (!origin) return callback(null, true);
+  if (
+    allowedOrigins.includes(origin) ||
+    /^http:\/\/localhost:\d+$/.test(origin) ||
+    /^http:\/\/127\.0\.0\.1:\d+$/.test(origin) ||
+    origin.endsWith(".vercel.app")
+  ) {
+    return callback(null, true);
+  }
+  return callback(null, true);
+};
+
 // ── Socket.IO Setup ──────────────────────────────────────────────────────────
 const io = new Server(server, {
   cors: {
-    origin: "https://school-class-management.vercel.app",
+    origin: corsOriginHandler,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -60,7 +83,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: "https://school-class-management.vercel.app",
+  origin: corsOriginHandler,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
